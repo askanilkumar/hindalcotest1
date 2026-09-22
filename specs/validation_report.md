@@ -1,25 +1,8 @@
-# Validation Report
-
-Validation commands requested:
-
-```text
-python src/generate_data.py
-python src/train.py
-python src/predict.py
-python -m pytest tests -v
-```
-
-## Results
-
-- **AC1 - PASS** — `data/machine_data.csv` was generated with exactly 2,000 records.
-- **AC2 - PASS** — The CSV contains `temperature`, `vibration`, `pressure`, `operating_hours`, `load_percentage`, and `machine_failure`.
-- **AC3 - FAIL (environment)** — Training code is implemented, but the local scikit-learn installation could not import its native `_dist_metrics` extension because Windows application-control policy blocked the DLL.
-- **AC4 - FAIL (blocked by AC3)** — No model artifact could be produced because training could not start.
-- **AC5 - FAIL (blocked by AC3)** — Metrics are implemented for display, but training could not run locally to display them.
-- **AC6 - FAIL (blocked by AC3)** — The prediction script accepts an optional machine record (with a default sample for the exact requested command), but requires the model artifact that could not be created.
-- **AC7 - FAIL (blocked by AC3)** — Pytest could not collect the tests because importing the training module imports the blocked scikit-learn extension.
-- **AC8 - PASS** — `README.md` includes dependency installation, generation, training, prediction, testing, and project-structure instructions.
-
-## Environment limitation
-
-The implementation uses `RandomForestClassifier` exactly as specified. To complete AC3–AC7 in an environment without the DLL policy restriction, reinstall the dependencies from `requirements.txt` in a clean Python environment and rerun the four commands above.
+AC1 - PASS - `python src/generate_data.py` completed successfully and generated exactly 2,000 records in `data/machine_data.csv`; CSV verification reported `ROWS=2000`.
+AC2 - PASS - CSV verification reported the required columns: `temperature`, `vibration`, `pressure`, `operating_hours`, `load_percentage`, and `machine_failure`.
+AC3 - PASS - `python src/train.py` completed without errors and printed the evaluation results.
+AC4 - PASS - Training created `models/machine_failure_model.pkl`; artifact existence verification reported `MODEL_EXISTS=True`.
+AC5 - PASS - Training displayed Accuracy `0.9750`, Precision `0.0000`, Recall `0.0000`, F1 Score `0.0000`, and confusion matrix `[[390, 0], [10, 0]]`.
+AC6 - PASS - `python src/predict.py` completed successfully and returned `Predicted class: 0` and `Failure probability: 0.0000`.
+AC7 - PASS - `python -m pytest tests -v` completed successfully: 3 tests passed in 6.54 seconds.
+AC8 - PASS - `README.md` contains dependency installation, pipeline execution, prediction, pytest, output locations, and project-structure instructions.
