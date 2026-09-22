@@ -1,0 +1,33 @@
+$schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
+type: pipeline
+experiment_name: hindalco-machine-failure-pipeline
+
+jobs:
+  generate_data:
+    type: command
+    code: .
+    command: >-
+      python src/generate_data.py
+      --output_path ${{outputs.generated_data}}/machine_data.csv
+    environment: azureml://registries/azureml/environments/sklearn-1.5/labels/latest
+    compute: azureml:hindalco-trainer1
+    outputs:
+      generated_data:
+        type: uri_folder
+        mode: rw_mount
+
+  train_model:
+    type: command
+    code: .
+    command: >-
+      python src/train.py
+      --data_path ${{inputs.generated_data}}/machine_data.csv
+      --model_dir ${{outputs.trained_model}}
+    environment: azureml://registries/azureml/environments/sklearn-1.5/labels/latest
+    compute: azureml:hindalco-trainer1
+    inputs:
+      generated_data: ${{parent.jobs.generate_data.outputs.generated_data}}
+    outputs:
+      trained_model:
+        type: uri_folder
+        mode: rw_mount

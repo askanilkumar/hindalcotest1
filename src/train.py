@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import sys
+import argparse
 
 import joblib
 import pandas as pd
@@ -55,7 +56,21 @@ RANDOM_STATE = 42
 
 
 if __name__ == "__main__":
-    _, evaluation = train_model()
+    parser = argparse.ArgumentParser(description="Train the machine-failure model.")
+    parser.add_argument(
+        "--data_path",
+        type=Path,
+        default=DATA_PATH,
+        help="Path to the machine_data.csv input file.",
+    )
+    parser.add_argument(
+        "--model_dir",
+        type=Path,
+        default=MODEL_PATH.parent,
+        help="Directory where machine_failure_model.pkl will be saved.",
+    )
+    args = parser.parse_args()
+    _, evaluation = train_model(args.data_path, args.model_dir / "machine_failure_model.pkl")
     for name, value in evaluation.items():
         print(f"{name}:\n{value}" if name == "Confusion Matrix" else f"{name}: {value:.4f}")
-    print(f"Model saved to {MODEL_PATH}")
+    print(f"Model saved to {args.model_dir / 'machine_failure_model.pkl'}")

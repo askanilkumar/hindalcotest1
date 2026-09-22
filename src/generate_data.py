@@ -1,6 +1,7 @@
 """Generate deterministic synthetic machine-failure data."""
 
 from pathlib import Path
+import argparse
 
 import numpy as np
 import pandas as pd
@@ -55,5 +56,13 @@ def generate_dataset(output_path: Path = DATA_PATH) -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    data = generate_dataset()
-    print(f"Generated {len(data)} records at {DATA_PATH}")
+    parser = argparse.ArgumentParser(description="Generate synthetic machine data.")
+    parser.add_argument(
+        "--output_path",
+        type=Path,
+        default=DATA_PATH,
+        help="Path for the generated machine_data.csv file.",
+    )
+    args = parser.parse_args()
+    data = generate_dataset(args.output_path)
+    print(f"Generated {len(data)} records at {args.output_path}")
